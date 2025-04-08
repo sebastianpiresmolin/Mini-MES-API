@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mini MES API", "Mini MES API\Mini MES API.csproj", "{673C3BC7-A5C6-4525-9D95-7E583196D8EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mini_MES_API", "Mini_MES_API\Mini_MES_API.csproj", "{673C3BC7-A5C6-4525-9D95-7E583196D8EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

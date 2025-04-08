@@ -4782,11 +4782,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\sebastian.molin\\Documents\\GitHub\\Mini MES API\\Mini MES API\\Mini MES API.csproj",
-      "projectName": "Mini MES API",
-      "projectPath": "C:\\Users\\sebastian.molin\\Documents\\GitHub\\Mini MES API\\Mini MES API\\Mini MES API.csproj",
+      "projectUniqueName": "C:\\Users\\sebastian.molin\\Documents\\GitHub\\Mini MES API\\Mini_MES_API\\Mini_MES_API.csproj",
+      "projectName": "Mini_MES_API",
+      "projectPath": "C:\\Users\\sebastian.molin\\Documents\\GitHub\\Mini MES API\\Mini_MES_API\\Mini_MES_API.csproj",
       "packagesPath": "C:\\Users\\sebastian.molin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\sebastian.molin\\Documents\\GitHub\\Mini MES API\\Mini MES API\\obj\\",
+      "outputPath": "C:\\Users\\sebastian.molin\\Documents\\GitHub\\Mini MES API\\Mini_MES_API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

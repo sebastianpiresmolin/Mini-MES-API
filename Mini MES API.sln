@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mini MES API", "Mini MES API\Mini MES API.csproj", "{673C3BC7-A5C6-4525-9D95-7E583196D8EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{673C3BC7-A5C6-4525-9D95-7E583196D8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{673C3BC7-A5C6-4525-9D95-7E583196D8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{673C3BC7-A5C6-4525-9D95-7E583196D8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{673C3BC7-A5C6-4525-9D95-7E583196D8EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -13,6 +13,9 @@ public class ProductionOrder
     public int Quantity { get; set; } = 0;
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
+    public DateTime PlannedEndTime { get; set; } 
+    public int DefectCount { get; set; } 
+    public double IdealCycleTimeMinutes { get; set; } 
     [Required]
     public Status Status { get; set; } = Status.Draft;
     public ICollection<WorkOrder> WorkOrders { get; set; }

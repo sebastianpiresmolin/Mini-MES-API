@@ -31,6 +31,49 @@ public static class ProductionOrderEndpoints
                 : Results.NotFound($"No work orders found for production order {id}.");
         });
         
+        app.MapGet("/production-orders/{id}/oee", async (DataContext context, int id) =>  
+        {  
+           var productionOrder = await context.ProductionOrders.FindAsync(id);
+
+           if (productionOrder == null)
+           {
+               return Results.NotFound($"Sorry, no production order with id: {id} found.");
+           }
+
+           var workOrder = await context.WorkOrders
+               .Where(w => w.ProductionOrderId == id)
+               .FirstOrDefaultAsync();
+
+           if (workOrder == null)
+           {
+               return Results.NotFound($"No work orders for production order with id: {id} found.");
+           }
+
+           if (productionOrder.Status != Status.Completed)
+           {
+               return Results.BadRequest($"The production order with id: {id} is not completed. OEE calculation unavailable.");
+           }
+           
+           var difference = productionOrder.EndTime - productionOrder.StartTime;
+           int totalMinutes = (int)difference.TotalMinutes;
+
+           var runTime = totalMinutes;
+           var plannedProductionTime = workOrder.DurationInMinutes;
+
+           double availability = Math.Min(1.0, (double)runTime / plannedProductionTime);
+           double performance = Math.Min(1.0, (productionOrder.IdealCycleTimeMinutes * productionOrder.Quantity) / runTime);
+           double quality = Math.Min(1.0, (double)(productionOrder.Quantity - productionOrder.DefectCount) / productionOrder.Quantity);
+
+           double oee = availability * performance * quality;
+
+           return Results.Ok($@"Availability: {availability * 100:F2}%
+            Performance: {performance * 100:F2}%
+            Quality: {quality * 100:F2}%
+
+            Overall OEE: {oee * 100:F2}%");
+        });
+        
+        
         app.MapPost("/production-orders", async (DataContext context, [FromBody] CreateProductionOrderDto dto) =>
             {
                 var productionOrder = new ProductionOrder
@@ -39,6 +82,9 @@ public static class ProductionOrderEndpoints
                     Quantity = dto.Quantity,
                     StartTime = dto.StartTime,
                     EndTime = dto.EndTime,
+                    PlannedEndTime = dto.PlannedEndTime,
+                    DefectCount = dto.DefectCount,
+                    IdealCycleTimeMinutes = dto.IdealCycleTimeMinutes,
                     Status = dto.Status
                 };
 
@@ -73,6 +119,19 @@ public static class ProductionOrderEndpoints
                 })
             .ProducesValidationProblem()
             .Produces<WorkOrder>(StatusCodes.Status201Created);
+        
+        app.MapPut("/production-orders/{id:int}/schedule", async (DataContext context, int id) =>
+        {
+            var productionOrder = await context.ProductionOrders.FindAsync(id);
+            if (productionOrder is null)
+                return Results.NotFound(
+                    $"Sorry, order could not be started because no production order with id: {id} found.");
+                
+            productionOrder.Status = Status.Scheduled;
+            await context.SaveChangesAsync();
+                
+            return Results.Ok(await context.ProductionOrders.FindAsync(id));
+        });
 
         app.MapPut("/production-orders/{id:int}/start", async (DataContext context, int id) =>
             {
@@ -101,6 +160,19 @@ public static class ProductionOrderEndpoints
                     
                 return Results.Ok(await context.ProductionOrders.FindAsync(id));
             });
+        
+        app.MapPut("/production-orders/{id:int}/cancel", async (DataContext context, int id) =>
+        {
+            var productionOrder = await context.ProductionOrders.FindAsync(id);
+            if (productionOrder is null)
+                return Results.NotFound(
+                    $"Sorry, order could not be started because no production order with id: {id} found.");
+                
+            productionOrder.Status = Status.Cancelled;
+            await context.SaveChangesAsync();
+                
+            return Results.Ok(await context.ProductionOrders.FindAsync(id));
+        });
 
         app.MapDelete("/production-orders/{id:int}", async (DataContext context, int id) =>
             {

@@ -10,8 +10,10 @@ public class WorkOrder
     [Required]
     [ForeignKey(nameof(ProductionOrder))]
     public int ProductionOrderId { get; set; }
-    public ProductionOrder ProductionOrder { get; set; }
+    public ProductionOrder? ProductionOrder { get; set; }
     public string StepName { get; set; }
+    [Required]
     public string Description { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "Duration must be at least 1 minute.")]
     public int DurationInMinutes { get; set; }
 }

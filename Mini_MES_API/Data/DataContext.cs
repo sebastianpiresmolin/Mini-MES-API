@@ -15,6 +15,10 @@ public class DataContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<ProductionOrder>()
+            .Property(p => p.Status)
+            .HasConversion<string>();
+        
         modelBuilder.Entity<WorkOrder>()
             .HasOne(w => w.ProductionOrder)
             .WithMany(p => p.WorkOrders)

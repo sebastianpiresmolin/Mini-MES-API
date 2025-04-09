@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Mini_MES_API.Enums;
 using Mini_MES_API.Helpers;
 
-
 namespace Mini_MES_API.Api;
 
 public static class ProductionOrderEndpoints
@@ -14,12 +13,16 @@ public static class ProductionOrderEndpoints
     public static void MapProductionOrderEndPoints(this WebApplication app)
     {
         app.MapGet("/production-orders", async (DataContext context) =>
-            await context.ProductionOrders.ToListAsync());
+            await context.ProductionOrders.ToListAsync())
+            .WithDescription("Get all production orders.")
+            .WithOpenApi();
         
         app.MapGet("/production-orders/{id:int}", async (DataContext context, int id) =>
             await context.ProductionOrders.FindAsync(id) is { } productionOrder
                 ? Results.Ok(productionOrder)
-                : Results.NotFound($"Sorry, no production order with id: {id} found."));
+                : Results.NotFound($"Sorry, no production order with id: {id} found."))
+            .WithDescription("Get production order by id.")
+            .WithOpenApi();
 
         app.MapGet("/production-orders/{id:int}/instructions", async (DataContext context, int id) =>
         {
@@ -30,8 +33,10 @@ public static class ProductionOrderEndpoints
             return workOrders.Count > 0 
                 ? Results.Ok(workOrders) 
                 : Results.NotFound($"No work orders found for production order {id}.");
-        });
-        
+        })
+        .WithDescription("Get Work Orders by production order.")
+        .WithOpenApi();
+
         app.MapGet("/production-orders/{id}/oee", async (DataContext context, int id) =>
             {
                 var productionOrder = await context.ProductionOrders.FindAsync(id);
@@ -47,7 +52,8 @@ public static class ProductionOrderEndpoints
                 var oeeResult = OeeCalculationHelper.CalculateOee(productionOrder, workOrder);
                 return Results.Ok(oeeResult.ToFormattedString());
             })
-        .WithDescription("Calculates OEE from COMPLETED production orders.");
+            .WithDescription("Calculates OEE from COMPLETED production orders.")
+            .WithOpenApi();
         
         
         app.MapPost("/production-orders", async (DataContext context, [FromBody] CreateProductionOrderDto dto) =>
@@ -69,7 +75,9 @@ public static class ProductionOrderEndpoints
     
                 return Results.Created($"/production-orders/{productionOrder.Id}", productionOrder);
             })
-            .ProducesValidationProblem();
+            .ProducesValidationProblem()
+            .WithDescription("Create a production order.")
+            .WithOpenApi();
         
         app.MapPost("/production-orders/{id:int}/instructions",
                 async (DataContext context, int id, [FromBody] CreateWorkOrderDto dto) =>
@@ -94,7 +102,9 @@ public static class ProductionOrderEndpoints
                     return Results.Created($"/work-orders/{workOrder.Id}", workOrder);
                 })
             .ProducesValidationProblem()
-            .Produces<WorkOrder>(StatusCodes.Status201Created);
+            .Produces<WorkOrder>(StatusCodes.Status201Created)
+            .WithDescription("Create a new work order.")
+            .WithOpenApi();
         
         app.MapPut("/production-orders/{id:int}/schedule", async (DataContext context, int id) =>
         {
@@ -107,7 +117,9 @@ public static class ProductionOrderEndpoints
             await context.SaveChangesAsync();
                 
             return Results.Ok(await context.ProductionOrders.FindAsync(id));
-        });
+        })
+        .WithDescription("Set production order status to Scheduled.")
+        .WithOpenApi();
 
         app.MapPut("/production-orders/{id:int}/start", async (DataContext context, int id) =>
             {
@@ -121,7 +133,9 @@ public static class ProductionOrderEndpoints
                 await context.SaveChangesAsync();
                 
                 return Results.Ok(await context.ProductionOrders.FindAsync(id));
-            });
+            })
+            .WithDescription("Set production order status to InProgress.")
+            .WithOpenApi();
         
         app.MapPut("/production-orders/{id:int}/complete", async (DataContext context, int id) =>
             {
@@ -135,7 +149,9 @@ public static class ProductionOrderEndpoints
                 await context.SaveChangesAsync();
                     
                 return Results.Ok(await context.ProductionOrders.FindAsync(id));
-            });
+            })
+            .WithDescription("Set production order status to Completed.")
+            .WithOpenApi();
         
         app.MapPut("/production-orders/{id:int}/cancel", async (DataContext context, int id) =>
         {
@@ -148,7 +164,9 @@ public static class ProductionOrderEndpoints
             await context.SaveChangesAsync();
                 
             return Results.Ok(await context.ProductionOrders.FindAsync(id));
-        });
+        })
+        .WithDescription("Set production order status to Cancelled.")
+        .WithOpenApi();
 
         app.MapDelete("/production-orders/{id:int}", async (DataContext context, int id) =>
             {
@@ -162,7 +180,8 @@ public static class ProductionOrderEndpoints
                 await context.SaveChangesAsync();
                 
                 return Results.Ok($"Production order with id: {id} deleted.");
-            });
+            })
+            .WithDescription("Delete a production order.")
+            .WithOpenApi();
     }
-    
 }

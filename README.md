@@ -25,12 +25,16 @@ The Mini MES API has three features, two of these are rather plain and the first
 The second of the rather basic features is the ability to use the API to set the status of Production Orders through PUT-requests. In its current implementation it doesn't effect much other than that you can't delete Production Orders that isn't Cancelled or a Draft (To maintain documentation a soft deletion is preferred). But it is a part of the last feature which is a bit special and related to industrial standards, namely *OEE* calculations which you can only do on Production Orders with status Completed in the API.
 
 ![image](https://github.com/user-attachments/assets/557e3efd-9d5f-4930-a29b-ce286267549e)
-*The OEE Calculation*
+
+*The OEE Calculation*                                                                                                                                                                   
 *Source:* [OEE](https://www.leanproduction.com/oee/)
 
 
 *OEE Calculation*
-Overall Equipment Effectiveness (OEE) is a metric that identifies the percentage of planned production time that is truly productive. An OEE score of 100% represents perfect production: manufacturing only good parts, as fast as possible, with no downtime.
+Overall Equipment Effectiveness (OEE) is a metric that identifies the percentage of planned production time that is truly productive. An OEE score of 100% represents perfect production: manufacturing only good parts, as fast as possible, with no downtime. The Mini MES API has a feature to do this calculation, and also display each part calculation as well. These parts are: 
+- **Availability** that takes into account *Availability Loss*, which includes all events that stop planned production for an appreciable length of time (typically several minutes or longer). Availability Loss includes Unplanned Stops (such as equipment failures and material shortages), and Planned Stops (such as changeover time). Although the Mini MES API only uses start, stop and expected time discrepancies for this calculation.
+- **Quality** that takes into account *Quality Loss*, which factors out manufactured pieces that do not meet quality standards, including pieces that are later reworked.
+- **Performance** that takes into account *Performance Loss*, which includes all factors that cause the production asset to operate at less than the maximum possible speed when running (including Slow Cycles and Small Stops). This calculation, in contrast to *Availability*, factors in the *Ideal Cycle Time* which basically means how many minutes it ideally should take to manufacture one unit instead of looking at the total expected time for the order.
 
-The Mini MES API has 
+When you have these three variables calculated you can now 
 

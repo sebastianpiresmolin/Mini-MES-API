@@ -4,6 +4,7 @@ using Mini_MES_API.Models;
 using Mini_MES_API.Dto;
 using Microsoft.EntityFrameworkCore;
 using Mini_MES_API.Enums;
+using Mini_MES_API.Helpers;
 
 
 namespace Mini_MES_API.Api;
@@ -31,47 +32,22 @@ public static class ProductionOrderEndpoints
                 : Results.NotFound($"No work orders found for production order {id}.");
         });
         
-        app.MapGet("/production-orders/{id}/oee", async (DataContext context, int id) =>  
-        {  
-           var productionOrder = await context.ProductionOrders.FindAsync(id);
+        app.MapGet("/production-orders/{id}/oee", async (DataContext context, int id) =>
+            {
+                var productionOrder = await context.ProductionOrders.FindAsync(id);
+                if (productionOrder == null)
+                    return Results.NotFound($"No production order with id: {id} found.");
 
-           if (productionOrder == null)
-           {
-               return Results.NotFound($"Sorry, no production order with id: {id} found.");
-           }
+                if (productionOrder.Status != Status.Completed)
+                    return Results.BadRequest($"Order {id} is not completed. OEE unavailable.");
 
-           var workOrder = await context.WorkOrders
-               .Where(w => w.ProductionOrderId == id)
-               .FirstOrDefaultAsync();
+                var workOrder = await context.WorkOrders
+                    .FirstOrDefaultAsync(w => w.ProductionOrderId == id);
 
-           if (workOrder == null)
-           {
-               return Results.NotFound($"No work orders for production order with id: {id} found.");
-           }
-
-           if (productionOrder.Status != Status.Completed)
-           {
-               return Results.BadRequest($"The production order with id: {id} is not completed. OEE calculation unavailable.");
-           }
-           
-           var difference = productionOrder.EndTime - productionOrder.StartTime;
-           int totalMinutes = (int)difference.TotalMinutes;
-
-           var runTime = totalMinutes;
-           var plannedProductionTime = workOrder.DurationInMinutes;
-
-           double availability = Math.Min(1.0, (double)runTime / plannedProductionTime);
-           double performance = Math.Min(1.0, (productionOrder.IdealCycleTimeMinutes * productionOrder.Quantity) / runTime);
-           double quality = Math.Min(1.0, (double)(productionOrder.Quantity - productionOrder.DefectCount) / productionOrder.Quantity);
-
-           double oee = availability * performance * quality;
-
-           return Results.Ok($@"Availability: {availability * 100:F2}%
-            Performance: {performance * 100:F2}%
-            Quality: {quality * 100:F2}%
-
-            Overall OEE: {oee * 100:F2}%");
-        });
+                var oeeResult = OeeCalculationHelper.CalculateOee(productionOrder, workOrder);
+                return Results.Ok(oeeResult.ToFormattedString());
+            })
+        .WithDescription("Calculates OEE from COMPLETED production orders.");
         
         
         app.MapPost("/production-orders", async (DataContext context, [FromBody] CreateProductionOrderDto dto) =>

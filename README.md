@@ -38,3 +38,7 @@ Overall Equipment Effectiveness (OEE) is a metric that identifies the percentage
 
 Since we have have these three variables calculated we can now get the OEE-value of our Product Order!
 
+***How to run***
+
+**[PLACEHOLDER]**
+

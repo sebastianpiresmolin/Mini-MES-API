@@ -36,5 +36,5 @@ Overall Equipment Effectiveness (OEE) is a metric that identifies the percentage
 - **Quality** that takes into account *Quality Loss*, which factors out manufactured pieces that do not meet quality standards, including pieces that are later reworked.
 - **Performance** that takes into account *Performance Loss*, which includes all factors that cause the production asset to operate at less than the maximum possible speed when running (including Slow Cycles and Small Stops). This calculation, in contrast to *Availability*, factors in the *Ideal Cycle Time* which basically means how many minutes it ideally should take to manufacture one unit instead of looking at the total expected time for the order.
 
-When you have these three variables calculated you can now 
+Since we have have these three variables calculated we can now get the OEE-value of our Product Order!
 

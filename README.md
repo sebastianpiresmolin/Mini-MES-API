@@ -24,7 +24,7 @@ The Mini MES API has three features, two of these are rather plain and the first
 
 The second of the rather basic features is the ability to use the API to set the status of Production Orders through PUT-requests. In its current implementation it doesn't effect much other than that you can't delete Production Orders that isn't Cancelled or a Draft (To maintain documentation a soft deletion is preferred). But it is a part of the last feature which is a bit special and related to industrial standards, namely *OEE* calculations which you can only do on Production Orders with status Completed in the API.
 
-![image](https://github.com/user-attachments/assets/557e3efd-9d5f-4930-a29b-ce286267549e)
+![image](https://github.com/user-attachments/assets/9d0b8a44-1a52-4e13-8307-7bd87e1caf6b)
 
 *The OEE Calculation*                                                                                                                                                                   
 *Source:* [OEE](https://www.leanproduction.com/oee/)

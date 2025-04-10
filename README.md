@@ -9,7 +9,7 @@
 - Xunit
 - OEE
 
-**Current Test Coverage: 51%**
+**Current Test Coverage: 72%**
 
 # How to run
 
@@ -25,7 +25,7 @@
 Originally it was just supposed to be a tutorial project to teach myself how to work with MinimalAPI and Handlers. But at this time I was also diving deeper into [ISA-95](https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard) and more specifically level three - Manufacturing Execution Systems (MES). So the result became a project that was now both a platform to help me hone my API skills, but also shaped as a miniature MES-API. To make the MES-API have some sort of interactivity I let the SwaggerUI act as a small level 4 (Business Layer) by enabling POST/PUT requests.
 
 ![ISA-95-Model](https://github.com/user-attachments/assets/229f4401-9015-4783-890e-8572f4a6cdaf)
-*The ISA-95 Modell showing the different layers. This API lives in the third level while mimicing some communication coming in from the forth level*
+*The ISA-95 Modell showing the different layers. This API lives in the third level while mimicking some communication coming in from the forth level*
 *Source:* [ISA-95](https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard)
 
 # Features

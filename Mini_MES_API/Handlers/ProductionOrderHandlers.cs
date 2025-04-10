@@ -97,7 +97,7 @@ public class ProductionOrderHandlers
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(
-                $"Sorry, order could not be started because no production order with id: {id} found.");
+                $"Sorry, order could not be scheduled because no production order with id: {id} found.");
 
         productionOrder.Status = Status.Scheduled;
         await context.SaveChangesAsync();
@@ -138,7 +138,7 @@ public class ProductionOrderHandlers
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(
-                $"Sorry, order could not be started because no production order with id: {id} found.");
+                $"Sorry, order could not be cancelled because no production order with id: {id} found.");
 
         productionOrder.Status = Status.Cancelled;
         await context.SaveChangesAsync();

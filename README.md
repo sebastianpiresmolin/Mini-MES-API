@@ -38,6 +38,11 @@ Overall Equipment Effectiveness (OEE) is a metric that identifies the percentage
 
 Since we have have these three variables calculated we can now get the OEE-value of our Product Order!
 
+![image](https://github.com/user-attachments/assets/b495a034-18f9-4b82-87e3-5eddec565093)
+
+*Example response from the ../oee endpoint in Swagger*
+
+
 ***How to run***
 
 **[PLACEHOLDER]**

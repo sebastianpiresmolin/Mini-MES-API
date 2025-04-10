@@ -9,6 +9,8 @@
 - Xunit
 - OEE
 
+**Current Test Coverage: 51%**
+
 # How to run
 
 - Clone repository

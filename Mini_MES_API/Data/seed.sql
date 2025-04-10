@@ -1,14 +1,18 @@
 BEGIN TRANSACTION;
 
--- Insert 50 Production Orders (Car Parts Manufacturing)
+DELETE FROM WorkOrders;
+DELETE FROM ProductionOrders;
+
+DBCC CHECKIDENT ('ProductionOrders', RESEED, 0)
+DBCC CHECKIDENT ('WorkOrders', RESEED, 0)
+
+
 INSERT INTO ProductionOrders (ProductSKU, Quantity, StartTime, EndTime, PlannedEndTime, DefectCount, IdealCycleTimeMinutes, Status)
 VALUES
-    -- Original 3 orders with updated fields
+
     ('ENG-V8-2023', 50, '2023-10-01 08:00', '2023-10-05 17:00', '2023-10-05 12:00', 3, 45.5, 'Draft'),
     ('TRANS-9AT-2024', 100, GETDATE(), DATEADD(day, 7, GETDATE()), DATEADD(day, 6, GETDATE()), 7, 30.2, 'Scheduled'),
     ('BAT-LI-ION-50K', 200, '2023-10-10 07:30', '2023-10-12 15:00', '2023-10-12 10:00', 12, 15.8, 'InProgress'),
-
-    -- Additional 47 orders
     ('ENG-V6-2024', 75, '2024-01-15 07:00', '2024-01-20 16:00', '2024-01-19 16:00', 5, 52.3, 'Scheduled'),
     ('ENG-I4-TURBO', 120, '2024-01-18 08:30', '2024-01-25 15:30', '2024-01-24 15:30', 8, 38.7, 'Draft'),
     ('TRANS-6MT-2024', 80, '2024-01-22 07:00', '2024-01-28 17:00', '2024-01-27 17:00', 4, 42.0, 'Scheduled'),
@@ -57,37 +61,31 @@ VALUES
     ('BATTERY-AGM-95', 300, '2024-05-12 07:00', '2024-05-18 15:00', '2024-05-17 15:00', 8, 16.2, 'Draft'),
     ('WIRING-HARNESS-ENG', 100, '2024-05-15 08:00', '2024-05-22 17:00', '2024-05-21 17:00', 3, 42.8, 'Scheduled');
 
--- Get the first ProductionOrder ID for reference
 DECLARE @FirstId INT;
 SELECT @FirstId = MIN(Id) FROM ProductionOrders;
 
--- Insert Work Orders for the first 3 existing Production Orders (unchanged)
 DECLARE @EngineV8Id INT = @FirstId;
 DECLARE @TransmissionId INT = @FirstId + 1;
 DECLARE @BatteryId INT = @FirstId + 2;
 
--- Insert Work Orders for Engine V8 Production
 INSERT INTO WorkOrders (ProductionOrderId, StepName, Description, DurationInMinutes)
 VALUES
     (@EngineV8Id, 'Engine Block Machining', 'CNC machining of aluminum engine block', 240),
     (@EngineV8Id, 'Piston Assembly', 'Install forged pistons and connecting rods', 90),
     (@EngineV8Id, 'Quality Testing', 'Dyno testing and leak checks', 180);
 
--- Insert Work Orders for 9-Speed Transmission
 INSERT INTO WorkOrders (ProductionOrderId, StepName, Description, DurationInMinutes)
 VALUES
     (@TransmissionId, 'Gear Cutting', 'Precision cutting of helical gears', 300),
     (@TransmissionId, 'Hydraulic Assembly', 'Install valve body and torque converter', 150),
     (@TransmissionId, 'Final Inspection', 'Shift quality and pressure testing', 120);
 
--- Insert Work Orders for Lithium Batteries
 INSERT INTO WorkOrders (ProductionOrderId, StepName, Description, DurationInMinutes)
 VALUES
     (@BatteryId, 'Cell Stacking', 'Automated stacking of 18650 battery cells', 180),
     (@BatteryId, 'Welding', 'Laser welding of cell connections', 90),
     (@BatteryId, 'Encapsulation', 'Thermal management system installation', 210);
 
--- Add 41 more Work Orders for other Production Orders (to reach 50 total)
 INSERT INTO WorkOrders (ProductionOrderId, StepName, Description, DurationInMinutes)
 VALUES
     (@FirstId + 3, 'Block Casting', 'V6 engine block casting in aluminum foundry', 360),

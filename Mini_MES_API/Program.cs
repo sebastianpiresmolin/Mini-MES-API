@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Mini_MES_API.Data;
 using Mini_MES_API.Api;
+using Mini_MES_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"))
 );
+
+builder.Services.AddHostedService<StartupService>();
 
 var app = builder.Build();
 

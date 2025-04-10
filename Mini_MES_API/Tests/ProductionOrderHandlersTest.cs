@@ -6,6 +6,8 @@ using Mini_MES_API.Handlers;
 using Mini_MES_API.Models;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
 namespace Mini_MES_API.Tests
@@ -64,7 +66,59 @@ namespace Mini_MES_API.Tests
 
             var result = await handler.GetProductionOrderById(context, 999);
 
-            Assert.Equal(Results.NotFound($"Sorry, no production order with id: 999 found.").GetType(), result.GetType());
+            Assert.Equal(Results.NotFound($"Sorry, no production order with id: 999 found.").GetType(),
+                result.GetType());
+        }
+
+        [Fact]
+        public async Task GetWorkOrderByProductionOrderId_WithWorkOrders_ReturnsOk()
+        {
+            var options = GetDbContextOptions();
+            using var context = new DataContext(options);
+
+            var productionOrder = new ProductionOrder { Id = 1, ProductSKU = "ENG-V8" };
+            context.ProductionOrders.Add(productionOrder);
+
+            var workOrders = new List<WorkOrder>
+            {
+                new()
+                {
+                    Id = 1, ProductionOrderId = 1, Description = "Desc", StepName = "Casting", DurationInMinutes = 240
+                },
+                new()
+                {
+                    Id = 2, ProductionOrderId = 1, Description = "Desc", StepName = "Machining", DurationInMinutes = 360
+                }
+            };
+            context.WorkOrders.AddRange(workOrders);
+            await context.SaveChangesAsync();
+
+            var handler = new ProductionOrderHandlers();
+
+            // Act
+            var result = await handler.GetWorkOrderByProductionOrderId(context, 1);
+
+            // Assert
+            Assert.IsType<Ok<List<WorkOrder>>>(result);
+            var okResult = (Ok<List<WorkOrder>>)result;
+            Assert.Equal(2, okResult.Value.Count);
+        }
+
+        [Fact]
+        public async Task GetWorkOrderByProductionOrderId_NoWorkOrders_ReturnsNotFound()
+        {
+            var options = GetDbContextOptions();
+            using var context = new DataContext(options);
+
+            var handler = new ProductionOrderHandlers();
+
+            // Act
+            var result = await handler.GetWorkOrderByProductionOrderId(context, 999);
+
+            // Assert
+            Assert.IsType<NotFound<string>>(result);
+            var notFoundResult = (NotFound<string>)result;
+            Assert.Equal("No work orders found for production order 999.", notFoundResult.Value);
         }
 
         [Fact]

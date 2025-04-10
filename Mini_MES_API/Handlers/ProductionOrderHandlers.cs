@@ -14,11 +14,11 @@ public class ProductionOrderHandlers
     {
         return await context.ProductionOrders.ToListAsync();
     }
-    
+
     public async Task<IResult> GetProductionOrderById(DataContext context, int id)
     {
         var productionOrder = await context.ProductionOrders.FindAsync(id);
-        return productionOrder is not null 
+        return productionOrder is not null
             ? Results.Ok(productionOrder)
             : Results.NotFound($"Sorry, no production order with id: {id} found.");
     }
@@ -29,8 +29,8 @@ public class ProductionOrderHandlers
             .Where(w => w.ProductionOrderId == id)
             .ToListAsync();
 
-        return workOrders.Count > 0 
-            ? Results.Ok(workOrders) 
+        return workOrders.Count > 0
+            ? Results.Ok(workOrders)
             : Results.NotFound($"No work orders found for production order {id}.");
     }
 
@@ -66,7 +66,7 @@ public class ProductionOrderHandlers
 
         context.ProductionOrders.Add(productionOrder);
         await context.SaveChangesAsync();
-    
+
         return Results.Created($"/production-orders/{productionOrder.Id}", productionOrder);
     }
 
@@ -77,7 +77,7 @@ public class ProductionOrderHandlers
         {
             return Results.NotFound($"Sorry, Production order with id: {id} not found.");
         }
-                    
+
         var workOrder = new WorkOrder
         {
             ProductionOrderId = id,
@@ -98,10 +98,10 @@ public class ProductionOrderHandlers
         if (productionOrder is null)
             return Results.NotFound(
                 $"Sorry, order could not be started because no production order with id: {id} found.");
-                
+
         productionOrder.Status = Status.Scheduled;
         await context.SaveChangesAsync();
-                
+
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
@@ -111,11 +111,11 @@ public class ProductionOrderHandlers
         if (productionOrder is null)
             return Results.NotFound(
                 $"Sorry, order could not be started because no production order with id: {id} found.");
-                
+
         productionOrder.Status = Status.InProgress;
         productionOrder.StartTime = DateTime.Now;
         await context.SaveChangesAsync();
-                
+
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
@@ -125,11 +125,11 @@ public class ProductionOrderHandlers
         if (productionOrder is null)
             return Results.NotFound(
                 $"Sorry, order could not be completed because no production order with id: {id} found.");
-                    
+
         productionOrder.Status = Status.Completed;
         productionOrder.EndTime = DateTime.Now;
         await context.SaveChangesAsync();
-                    
+
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
@@ -139,10 +139,10 @@ public class ProductionOrderHandlers
         if (productionOrder is null)
             return Results.NotFound(
                 $"Sorry, order could not be started because no production order with id: {id} found.");
-                
+
         productionOrder.Status = Status.Cancelled;
         await context.SaveChangesAsync();
-                
+
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
@@ -150,13 +150,15 @@ public class ProductionOrderHandlers
     {
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
-            return Results.NotFound($"Sorry, order could not be deleted because no production order with id: {id} found.");
+            return Results.NotFound(
+                $"Sorry, order could not be deleted because no production order with id: {id} found.");
         if (productionOrder.Status != 0) // 0 == Draft
-            return Results.BadRequest($"Sorry, order could not be deleted because production order with id: {id} is not a draft.");
-                
+            return Results.BadRequest(
+                $"Sorry, order could not be deleted because production order with id: {id} is not a draft.");
+
         context.ProductionOrders.Remove(productionOrder);
         await context.SaveChangesAsync();
-                
+
         return Results.Ok($"Production order with id: {id} deleted.");
     }
 }

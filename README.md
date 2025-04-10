@@ -15,7 +15,7 @@
 - open the project and cd into `Mini_MES_API`
 - `dotnet restore` to download all the NuGet packages
 - `dotnet run` to start the application. This will update and seed a localdb Microsoft SQL Server. The connection string is already set in appsettings.json.
-- navigate to `http://localhost:5195/swagger` to interact with the API and se the API documentation. Or you can use any API agent of your choosing.
+- navigate to `http://localhost:5195/swagger` to interact with the API and see the API documentation. Or you can use any API agent of your choosing.
 
 
 # What is Mini MES API?

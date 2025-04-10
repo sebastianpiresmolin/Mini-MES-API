@@ -50,3 +50,51 @@ Since we have have these three variables calculated we can now get the OEE-value
 
 *Example response from the ../oee endpoint in Swagger*
 
+# Example Scenario
+
+**Create Production Order:**
+
+POST /production-orders
+
+`
+{
+  "productSKU": "string",
+  "quantity": 2147483647,
+  "startTime": "",
+  "endTime": "",
+  "plannedEndTime": "2025-04-10T07:04:09.321Z",
+  "defectCount": 0,
+  "idealCycleTimeMinutes": 0,
+  "status": 0
+}`
+
+
+**Start the order:**
+
+This will set the startTime to Now();
+
+PUT /production-orders/{id}/start
+
+
+`{}`
+
+
+**Add Work Order**
+
+POST /production-orders/{id}/instructions
+
+`
+{
+  "stepName": "string",
+  "description": "string",
+  "durationInMinutes": 250
+}`
+
+
+**Complete Production Order:**
+
+This will set endTime to Now();
+
+PUT /production-orders/{id}/complete
+
+`{}`

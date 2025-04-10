@@ -9,7 +9,7 @@
 - Xunit
 - OEE
 
-**Current Test Coverage: 72%**
+**Current Test Coverage: 90%**
 
 # How to run
 

@@ -1,11 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Mini_MES_API.Data;
-using Mini_MES_API.Models;
-using Mini_MES_API.Dto;
-using Microsoft.EntityFrameworkCore;
-using Mini_MES_API.Enums;
+﻿using Mini_MES_API.Models;
 using Mini_MES_API.Handlers;
-using Mini_MES_API.Helpers;
 
 namespace Mini_MES_API.Api;
 

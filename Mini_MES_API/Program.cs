@@ -16,7 +16,6 @@ builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
-
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"))
 );
@@ -38,3 +37,5 @@ app.UseHttpsRedirection();
 app.MapProductionOrderEndPoints();
 
 app.Run();
+
+public partial class Program { }

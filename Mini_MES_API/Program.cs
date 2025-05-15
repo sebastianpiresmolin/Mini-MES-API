@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Mini_MES_API.Data;
 using Mini_MES_API.Api;
+using Mini_MES_API.Handlers;
 using Mini_MES_API.Services;
+using Mini_MES_API.Stores;
+using MQTTnet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +18,18 @@ builder.Services.Configure<JsonOptions>(options =>
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<MachineStateStore>();
 
-builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"))
-);
+builder.Services.AddSingleton<FactorySnapshotStore>();
+builder.Services.AddHostedService<FactoryMqttListener>();
+
+builder.Services.AddDbContextFactory<DataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB")));
+
+builder.Services.AddScoped<ProductionOrderHandlers>();
 
 builder.Services.AddHostedService<StartupService>();
+
 
 var app = builder.Build();
 
@@ -35,6 +44,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.MapProductionOrderEndPoints();
+app.MapMachineStateEndpoints();
 
 app.Run();
 

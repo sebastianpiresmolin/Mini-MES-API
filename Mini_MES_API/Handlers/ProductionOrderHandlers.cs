@@ -10,21 +10,32 @@ namespace Mini_MES_API.Handlers;
 
 public class ProductionOrderHandlers
 {
-    public async Task<List<ProductionOrder>> GetAllProductionOrders(DataContext context)
+    
+    private readonly IDbContextFactory<DataContext> _contextFactory;
+
+    public ProductionOrderHandlers(IDbContextFactory<DataContext> contextFactory)
     {
+        _contextFactory = contextFactory;
+    }
+    
+    public async Task<List<ProductionOrder>> GetAllProductionOrders()
+    {
+        using var context = _contextFactory.CreateDbContext();
         return await context.ProductionOrders.ToListAsync();
     }
 
-    public async Task<IResult> GetProductionOrderById(DataContext context, int id)
+    public async Task<IResult> GetProductionOrderById( int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         return productionOrder is not null
             ? Results.Ok(productionOrder)
             : Results.NotFound($"Sorry, no production order with id: {id} found.");
     }
 
-    public async Task<IResult> GetWorkOrderByProductionOrderId(DataContext context, int id)
+    public async Task<IResult> GetWorkOrderByProductionOrderId( int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var workOrders = await context.WorkOrders
             .Where(w => w.ProductionOrderId == id)
             .ToListAsync();
@@ -34,8 +45,9 @@ public class ProductionOrderHandlers
             : Results.NotFound($"No work orders found for production order {id}.");
     }
 
-    public async Task<IResult> GetOeeCalculationsByProductionOrderId(DataContext context, int id)
+    public async Task<IResult> GetOeeCalculationsByProductionOrderId(int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder == null)
             return Results.NotFound($"No production order with id: {id} found.");
@@ -50,8 +62,9 @@ public class ProductionOrderHandlers
         return Results.Ok(oeeResult.ToFormattedString());
     }
 
-    public async Task<IResult> CreateProductionOrder(DataContext context, [FromBody] CreateProductionOrderDto dto)
+    public async Task<IResult> CreateProductionOrder([FromBody] CreateProductionOrderDto dto)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = new ProductionOrder
         {
             ProductSKU = dto.ProductSKU,
@@ -70,8 +83,9 @@ public class ProductionOrderHandlers
         return Results.Created($"/production-orders/{productionOrder.Id}", productionOrder);
     }
 
-    public async Task<IResult> CreateWorkOrder(DataContext context, int id, [FromBody] CreateWorkOrderDto dto)
+    public async Task<IResult> CreateWorkOrder(int id, [FromBody] CreateWorkOrderDto dto)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrderExists = await context.ProductionOrders.AnyAsync(p => p.Id == id);
         if (!productionOrderExists)
         {
@@ -92,8 +106,9 @@ public class ProductionOrderHandlers
         return Results.Created($"/work-orders/{workOrder.Id}", workOrder);
     }
 
-    public async Task<IResult> SetProductionOrderStatusScheduled(DataContext context, int id)
+    public async Task<IResult> SetProductionOrderStatusScheduled(int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(
@@ -105,8 +120,9 @@ public class ProductionOrderHandlers
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
-    public async Task<IResult> SetProductionOrderStatusInProgress(DataContext context, int id)
+    public async Task<IResult> SetProductionOrderStatusInProgress(int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(
@@ -119,8 +135,9 @@ public class ProductionOrderHandlers
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
-    public async Task<IResult> SetProductionOrderStatusCompleted(DataContext context, int id)
+    public async Task<IResult> SetProductionOrderStatusCompleted(int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(
@@ -133,8 +150,9 @@ public class ProductionOrderHandlers
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
-    public async Task<IResult> SetProductionOrderStatusCancelled(DataContext context, int id)
+    public async Task<IResult> SetProductionOrderStatusCancelled(int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(
@@ -146,8 +164,9 @@ public class ProductionOrderHandlers
         return Results.Ok(await context.ProductionOrders.FindAsync(id));
     }
 
-    public async Task<IResult> DeleteProductionOrder(DataContext context, int id)
+    public async Task<IResult> DeleteProductionOrder(int id)
     {
+        using var context = _contextFactory.CreateDbContext();
         var productionOrder = await context.ProductionOrders.FindAsync(id);
         if (productionOrder is null)
             return Results.NotFound(

@@ -8,6 +8,8 @@ public static class ProductionOrderEndpoints
 {
     public static void MapProductionOrderEndPoints(this WebApplication app)
     {
+        app.UseCors("AllowFrontend");
+        
         app.MapGet("/production-orders", async (ProductionOrderHandlers handlers) => await handlers.GetAllProductionOrders())
             .WithDescription("Get all production orders.")
             .WithOpenApi();

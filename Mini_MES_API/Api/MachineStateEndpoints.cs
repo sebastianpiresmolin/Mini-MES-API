@@ -9,6 +9,7 @@ public static class MachineStateEndpoints
 {
     public static void MapMachineStateEndpoints(this WebApplication app)
     {
+        app.UseCors("AllowFrontend");
         app.MapGet("/factory/state", MachineStateHandlers.GetFactorySnapshot)
             .WithDescription("Get current state of all machines.")
             .WithOpenApi();

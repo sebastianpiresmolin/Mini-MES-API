@@ -7,6 +7,7 @@ using Mini_MES_API.Handlers;
 using Mini_MES_API.Services;
 using Mini_MES_API.Stores;
 using MQTTnet;
+using MQTTnet.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,12 @@ builder.Services.AddSingleton<MachineStateStore>();
 
 builder.Services.AddSingleton<FactorySnapshotStore>();
 builder.Services.AddHostedService<FactoryMqttListener>();
+
+builder.Services.AddSingleton<IMqttClient>(provider =>
+{
+    var factory = new MqttFactory();
+    return factory.CreateMqttClient();
+});
 
 builder.Services.AddDbContextFactory<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB")));

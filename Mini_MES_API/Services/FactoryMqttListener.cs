@@ -38,12 +38,34 @@ public class FactoryMqttListener : BackgroundService
 
             await Task.CompletedTask;
         };
-
+        
         client.ConnectedAsync += async e =>
         {
             await client.SubscribeAsync("factory/state_snapshot");
         };
-
+        
+        client.DisconnectedAsync += async e =>
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                try
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken); 
+                    await client.ConnectAsync(options, stoppingToken);
+                    break;
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
+        };
+        
         await client.ConnectAsync(options, stoppingToken);
+        
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(1000, stoppingToken);
+        }
     }
 }

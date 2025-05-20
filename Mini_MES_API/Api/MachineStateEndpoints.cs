@@ -20,5 +20,10 @@ public static class MachineStateEndpoints
         app.MapGet("/factory/{id}/poweroff", MachineStateHandlers.ShutdownMachine)
             .WithDescription("Shut down machine via MQTT.")
             .WithOpenApi();
+        
+        app.UseCors("AllowFrontend");
+        app.MapGet("/factory/{id}/poweron", MachineStateHandlers.PowerUpMachine)
+            .WithDescription("Power up machine via MQTT.")
+            .WithOpenApi();
     }
 }

@@ -30,8 +30,10 @@ builder.Services.AddSingleton<IMqttClient>(provider =>
     return factory.CreateMqttClient();
 });
 
-builder.Services.AddDbContextFactory<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB")));
+builder.Services.AddDbContextFactory<DataContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHostedService<DatabaseMigrationService>();
 
 builder.Services.AddScoped<ProductionOrderHandlers>();
 

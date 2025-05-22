@@ -24,7 +24,7 @@ public class MachineStateHandlers
         if (!mqttClient.IsConnected)
         {
             var options = new MqttClientOptionsBuilder()
-                .WithTcpServer("localhost", 1883)
+                .WithTcpServer("mosquitto", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V311)
                 .Build();
             await mqttClient.ConnectAsync(options);
@@ -55,7 +55,7 @@ public class MachineStateHandlers
         if (!mqttClient.IsConnected)
         {
             var options = new MqttClientOptionsBuilder()
-                .WithTcpServer("localhost", 1883)
+                .WithTcpServer("mosquitto", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V311)
                 .Build();
             await mqttClient.ConnectAsync(options);

@@ -16,31 +16,58 @@
 
 # How to run
 
+- Go to ![link](https://github.com/sebastianpiresmolin/Smart-Factory-Sim) and follow instructions
+
 - Clone repository
 - open the project and cd into `Mini_MES_API`
-- `dotnet restore` to download all the NuGet packages
-- `dotnet run` to start the application. This will update and seed a localdb Microsoft SQL Server. The connection string is already set in appsettings.json.
-- navigate to `http://localhost:5195/swagger` to interact with the API and see the API documentation. Or you can use any API agent of your choosing.
+- `docker compose up --build` to build the docker image
+- Make sure that Smart-Factory-Sim is running
+- `docker compose up` to start all of the containers.
+- Navigate to `http://localhost:5000/swagger` to interact with the API and see the API documentation. Or you can use any API agent of your choosing.
 
 
 # What is Mini MES API?
+Originally it was just supposed to be a tutorial project to teach myself how to work with MinimalAPI and Handlers. But at this time I was also diving deeper into ISA-95 and more specifically level three - Manufacturing Execution Systems (MES). So the result became a project that was both a platform to help me hone my API skills, but also shaped as a miniature MES-API. To make the MES-API have some sort of interactivity I let the SwaggerUI act as a small level 4 (Business Layer) by enabling POST/PUT requests.
 
-Originally it was just supposed to be a tutorial project to teach myself how to work with MinimalAPI and Handlers. But at this time I was also diving deeper into [ISA-95](https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard) and more specifically level three - Manufacturing Execution Systems (MES). So the result became a project that was now both a platform to help me hone my API skills, but also shaped as a miniature MES-API. To make the MES-API have some sort of interactivity I let the SwaggerUI act as a small level 4 (Business Layer) by enabling POST/PUT requests.
+**New: Factory Simulator Integration**
 
-![ISA-95-Model](https://github.com/user-attachments/assets/229f4401-9015-4783-890e-8572f4a6cdaf)
-*The ISA-95 Modell showing the different layers. This API lives in the third level while mimicking some communication coming in from the forth level*
-*Source:* [ISA-95](https://www.isa.org/standards-and-publications/isa-standards/isa-95-standard)
+The project now includes integration with a C++ factory simulator that provides real-time data about machines, sensors, and production metrics via MQTT. This adds a significant level of realism to the MES by:
 
-# Features
+Providing real-time machine state monitoring (temperatures, vibration, operational status)
+Tracking production and material loss metrics from simulated equipment
+Publishing factory state snapshots through MQTT for consumption by the MES-API
+Creating a more complete ISA-95 implementation with actual Level 1-2 data flowing up to Level 3
+ISA-95-Model The ISA-95 Model showing the different layers. This API lives in the third level, receiving data from the factory simulation (Level 1-2) while also mimicking communication from the fourth level Source: ISA-95
 
-The Mini MES API has three features, two of these are rather plain and the first is the ability to perform CRUD operations on Work Orders and Production Orders. Work Orders are attached to Production Orders in a one-to-many-relationship, which means that Production Orders can have multiple Work Orders attached to them. This simulated how industries often queue multiple jobs (Work Orders) to the same production line (Production Order in Mini MES API).
+*Features*
 
-The second of the rather basic features is the status of Production Orders which right now is set by the same CRUD I mentioned above, But I envision that the status would be part of an Event Driven design using a tool like MediatR in the future. In its current implementation it doesn't effect much other than that you can't delete Production Orders that isn't Cancelled or a Draft (To maintain documentation a soft deletion is preferred). But it is a part of the last feature which is a bit special and related to LEAN standards, namely *OEE* calculations which you can only do on Production Orders with status Completed in the API.
+Work Order & Production Order Management
+The Mini MES API provides CRUD operations on Work Orders and Production Orders. Work Orders are attached to Production Orders in a one-to-many-relationship, which means that Production Orders can have multiple Work Orders attached to them. This simulates how industries often queue multiple jobs (Work Orders) to the same production line (Production Order).
 
-![image](https://github.com/user-attachments/assets/9d0b8a44-1a52-4e13-8307-7bd87e1caf6b)
+*Production Order Status Tracking*
 
-*The OEE Calculation*                                                                                                                                                                   
-*Source:* [OEE](https://www.leanproduction.com/oee/)
+The status of Production Orders can be updated through the API. In its current implementation, the status affects operations like deletion (you can't delete Production Orders that aren't Cancelled or a Draft). This status is also used for OEE calculations, which can only be performed on Production Orders with status "Completed".
+
+*Factory Simulation Monitoring*
+
+The newest feature integrates real-time factory floor simulation data:
+
+Machine state monitoring (running/stopped)
+Sensor data visualization (temperature, vibration)
+Production metrics tracking (items produced, materials lost)
+Live factory state snapshots via MQTT integration
+OEE Calculation
+For completed Production Orders, the API can calculate OEE (Overall Equipment Effectiveness), a key performance indicator in manufacturing that combines availability, performance, and quality metrics.
+
+*Technical Implementation*
+
+The project now incorporates a multi-container architecture:
+
+.NET Minimal API for the MES functionality
+C++ factory simulator generating realistic production data
+MQTT broker (Mosquitto) for message passing between components
+Node-RED for workflow visualization and testing
+This setup provides a more comprehensive demonstration of modern manufacturing software architecture, closely mimicking the ISA-95 model with actual data flowing between layers.
 
 
 *OEE Calculation*

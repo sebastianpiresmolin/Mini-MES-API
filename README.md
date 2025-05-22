@@ -27,6 +27,8 @@
 
 
 # What is Mini MES API?
+**This project is a work in progress**
+
 Originally it was just supposed to be a tutorial project to teach myself how to work with MinimalAPI and Handlers. But at this time I was also diving deeper into ISA-95 and more specifically level three - Manufacturing Execution Systems (MES). So the result became a project that was both a platform to help me hone my API skills, but also shaped as a miniature MES-API. To make the MES-API have some sort of interactivity I let the SwaggerUI act as a small level 4 (Business Layer) by enabling POST/PUT requests.
 
 **New: Factory Simulator Integration**

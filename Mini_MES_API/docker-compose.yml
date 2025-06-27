@@ -1,0 +1,26 @@
+services:
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrongPassword123!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - smart-factory-sim_factorynet
+
+  mini_mes_api:
+    build: .
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "5000:80"
+    networks:
+      - smart-factory-sim_factorynet
+
+networks:
+  smart-factory-sim_factorynet:
+    external: true
